@@ -17,8 +17,16 @@ export function part1(input: string[]): number {
 }
 
 export function part2(input: string[]): number {
-    // Example: sum line lengths using functional utility
-    return F.sum(input.map(line => line.length));
+    const id_ranges = ranges(input[0]!);
+    log(id_ranges);
+
+    let invalid_ids: number[] = [];
+    for (let range of id_ranges) {
+        const invalid_in_range = invalid_ids_in_range(range[0]!, range[1]!, false);
+        log(`Invalid ids in range ${range} = ${invalid_in_range}`);
+        invalid_ids = invalid_ids.concat(invalid_in_range);
+    }
+    return F.sum(invalid_ids);
 }
 
 function ranges(input_line: string): number[][] {
@@ -26,17 +34,17 @@ function ranges(input_line: string): number[][] {
     return ranges;
 }
 
-function invalid_ids_in_range(start: number, end: number): number[] {
+function invalid_ids_in_range(start: number, end: number, simple = true): number[] {
     let invalids = [];
     for (let current = start; current <= end; current++) {
-        if (id_repeats_digits(current)) {
+        if (simple && id_repeats_digits_simple(current) || !simple && id_repeats_digits_multiple(current)) {
             invalids.push(current);
         }
     }
     return invalids;
 }
 
-function id_repeats_digits(id: number): boolean {
+function id_repeats_digits_simple(id: number): boolean {
     // 1. Calculate number of digits (N) using base-10 logarithm.
     const N = Math.floor(Math.log10(id)) + 1;
 
@@ -58,4 +66,10 @@ function id_repeats_digits(id: number): boolean {
 
     // 5. The ID is invalid if the two halves are equal.
     return firstHalf === secondHalf;
+}
+
+const CHECK_REPEATING_REGEX = /^(\d+)\1+$/;
+
+function id_repeats_digits_multiple(id: number): boolean {
+    return CHECK_REPEATING_REGEX.test(String(id));
 }
