@@ -2,13 +2,13 @@
 import { join, dirname } from "path";
 
 export function readInput(year: string, day: string): string[] {
-  const file = join("inputs", year, `input${day}.txt`);
-  return readFileSync(file, "utf8").trimEnd().split("\n");
+    const file = join("inputs", year, `input${day}.txt`);
+    return readFileSync(file, "utf8").trimEnd().split("\n");
 }
 
 // Convert input lines to numbers
 export function readNumbers(year: string, day: string): number[] {
-  return readInput(year, day).map(Number);
+    return readInput(year, day).map(Number);
 }
 
 /*
@@ -86,7 +86,7 @@ export function parseFileInfo(filePath: string): { year: string; day: string } {
     // Extract year from directory (second to last part) and day from filename
     const year = pathParts[pathParts.length - 2] || "2025";
     const dayMatch = pathParts[pathParts.length - 1]?.match(/day(\d+)\.ts$/);
-    const day = dayMatch[1].padStart(2, '0') || "01";
+    const day = dayMatch![1]!.padStart(2, '0') || "01";
 
     return { year, day };
 }
@@ -114,5 +114,10 @@ export const silenceDebug = () => {
 
 export const log = (...args: any[]) => {
     if (debugSilenced) return;
+    for (let i = 0; i < args.length; i++) {
+        if (typeof args[i] === 'function') {
+            args[i] = args[i]();
+        }
+    }
     console.log(' $', ...args);
 };

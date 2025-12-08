@@ -15,31 +15,26 @@ export function part2(input: string[]): number {
 }
 
 function find_highest_joltage(bank: string, digits: number): number {
-    log(`Processing bank: ${bank}`);
+    // log(`Processing bank: ${bank}`);
     let selected = [];
-    let startFromIdx = 0;
+    let startIdx = 0;
     for (let d = 0; d < digits; d++) {
-        const part = bank.substring(startFromIdx, bank.length - (digits - d - 1));
-        log(part);
-        let [c, i] = biggest(part);
-        selected.push(c);
-        startFromIdx += i + 1;
-        log(selected, startFromIdx);
+        let [foundDigit, foundIdx] = biggest(bank, startIdx, bank.length - startIdx - digits + d + 1);
+        selected.push(foundDigit);
+        startIdx = foundIdx + 1;
     }
     const joltage = parseInt(selected.join(''));
-    log(`Joltage: ${joltage}`);
+    // log(`Joltage: ${joltage}`);
     return joltage;
 }
 
-function biggest(s: string): [string, number] {
+function biggest(s: string, start: number, length: number): [string, number] {
+    // log(`Start: ${start}, length: ${length} `, () => s.substring(start, start + length));
     let b: [string, number] = ['0', -1];
-    for (let i = 0; i < s.length; i++) {
+    for (let i = start; i < start + length; i++) {
         if (s[i]! > b[0]) {
             b = [s[i]!, i];
         }
-    }
-    if (b[1] == -1) {
-        log("Error, biggest not found. " + s);
     }
     return [b[0], b[1]];
 }
